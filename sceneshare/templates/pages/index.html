@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+
+<div class="container mt-4">
+
+    {% for scene in scenes %}
+    
+    <div class="row mb-4">
+        <div class="col-md-6 m-auto">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="card-subtitle mb-2 text-muted"> {{ scene.user.username }} </h6>
+                        </div>
+                    </div>
+                    <p>
+                        {{ scene.text }}
+                    </p>
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/{{ scene.url }}" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% if user.is_authenticated %}
+
+
+                            <form id="like-form" style="display:inline;" method="post" action="{% url 'like' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="scene" value="{{ scene.id }}">
+                                <button id="like-submit" class="btn btn-secondary btn-small">
+                                    <i class="fas fa-thumbs-up" id="scene-like-{{ scene.id }}"></i>
+                                    {% for like in likes %}
+                                        {% if scene == like.scene %}
+                                            <style>#scene-like-{{ scene.id }} {color:#ff9d99;}</style>
+                                        {% endif %}
+                                    {% endfor %}
+                                </button>
+                            </form>
+
+
+                            {% endif %}
+                            <a href="./scene/{{ scene.id }}" class="btn btn-secondary btn-small"><i class="fas fa-eye"></i></a>
+
+                            {% if scene.user.id == user.id %}
+                                <form id="scene-form" style="display:inline;" method="post" action="{% url 'delete' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="scene" value="{{ scene.id }}">
+                                    <button type="submit" class="btn btn-danger btn-small"><i class="fas fa-trash"></i></button>
+                                </form>
+                            {% endif %}
+
+                            <p class="float-right">
+                                {{ scene.liker_set.all.count }} like{{ scene.liker_set.all.count | pluralize }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% endfor %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
