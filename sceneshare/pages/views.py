@@ -7,6 +7,7 @@ from .forms import RegisterForm
 from .models import *
 from .utils import get_video_id
 
+
 def index(request):
     scenes = Scene.objects.order_by('-published')[:15]
     if request.user.is_authenticated:
